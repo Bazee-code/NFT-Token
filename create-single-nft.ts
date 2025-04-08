@@ -34,7 +34,7 @@ const mint = generateSigner(umi);
 const transaction = await createNft(umi, {
     mint ,
     name : "My NFT", 
-    uri : "https://raw.githubusercontent.com/Bazee-code/NFT-Token/refs/heads/main/metadata.json",
+    uri : "https://raw.githubusercontent.com/Bazee-code/NFT-Token/refs/heads/main/nft-metadata.json",
     sellerFeeBasisPoints : percentAmount(0),
     collection : {
         key : collectionAddress,
