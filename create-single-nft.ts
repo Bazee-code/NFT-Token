@@ -44,6 +44,6 @@ const transaction = await createNft(umi, {
 
 await transaction.sendAndConfirm(umi);
 
-
+const createdNft = await fetchDigitalAsset(umi, mint.publicKey);
 // get nft
-console.log(`created nft address is: `)
+console.log(`created nft address is: ${getExplorerLink("address", createdNft.mint.publicKey, "devnet")}`)
