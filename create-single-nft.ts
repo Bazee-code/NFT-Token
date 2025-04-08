@@ -1,5 +1,5 @@
 import { createNft, fetchDigitalAsset, mplTokenMetadata } from "@metaplex-foundation/mpl-token-metadata";
-import { generateSigner, keypairIdentity, percentAmount } from "@metaplex-foundation/umi";
+import { generateSigner, keypairIdentity, percentAmount, publicKey } from "@metaplex-foundation/umi";
 import { createUmi } from "@metaplex-foundation/umi-bundle-defaults";
 import { airdropIfRequired, getExplorerLink, getKeypairFromFile } from "@solana-developers/helpers";
 import {clusterApiUrl, Connection, LAMPORTS_PER_SOL} from '@solana/web3.js'
@@ -24,24 +24,26 @@ umi.use(keypairIdentity(umiUser))
 
 console.log('umi instance running');
 
-// collections are just nfts that point to other nfts
-const collectionMint = generateSigner(umi);
+const collectionAddress = publicKey("HutUAyNZBVa7bpkkZpvoMbwSC1dyDL6mtEc1SFMne6Q6");
 
-// create transaction to create collection
+console.log('creating NFT....');
 
+const mint = generateSigner(umi);
+
+// transaction to create NFT
 const transaction = await createNft(umi, {
-    mint : collectionMint,
-    name : "My Collection", 
-    symbol : "MC",
+    mint ,
+    name : "My NFT", 
     uri : "https://raw.githubusercontent.com/Bazee-code/NFT-Token/refs/heads/main/metadata.json",
     sellerFeeBasisPoints : percentAmount(0),
-    isCollection : true
-})
+    collection : {
+        key : collectionAddress,
+        verified : false
+    }
+});
 
-// send transaction
 await transaction.sendAndConfirm(umi);
 
-// fetch collection
-const createdCollectionNft = await fetchDigitalAsset(umi, collectionMint.publicKey);
 
-console.log(`created collection address is ${getExplorerLink("address", createdCollectionNft.mint.publicKey, "devnet")}`);
+// get nft
+console.log(`created nft address is: `)
