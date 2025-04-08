@@ -31,7 +31,7 @@ const transaction = await createNft(umi, {
     mint : collectionMint,
     name : "My Collection", 
     symbol : "MC",
-    uri : "https://...",
+    uri : "https://raw.githubusercontent.com/Bazee-code/NFT-Token/refs/heads/main/metadata.json",
     sellerFeeBasisPoints : percentAmount(0),
     isCollection : true
 })
