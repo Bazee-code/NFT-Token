@@ -19,6 +19,7 @@
   "homepage": "https://github.com/Bazee-code/NFT-Token#readme",
   "dependencies": {
     "@metaplex-foundation/mpl-token-metadata": "^3.4.0",
-    "@metaplex-foundation/umi-bundle-defaults": "^1.1.1"
+    "@metaplex-foundation/umi-bundle-defaults": "^1.1.1",
+    "@solana-developers/helpers": "^2.8.1"
   }
 }
