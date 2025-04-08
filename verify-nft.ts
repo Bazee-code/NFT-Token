@@ -1,4 +1,4 @@
-import { createNft, fetchDigitalAsset, mplTokenMetadata } from "@metaplex-foundation/mpl-token-metadata";
+import { createNft, fetchDigitalAsset, findMetadataPda, mplTokenMetadata, verifyCollectionV1 } from "@metaplex-foundation/mpl-token-metadata";
 import { generateSigner, keypairIdentity, percentAmount, publicKey } from "@metaplex-foundation/umi";
 import { createUmi } from "@metaplex-foundation/umi-bundle-defaults";
 import { airdropIfRequired, getExplorerLink, getKeypairFromFile } from "@solana-developers/helpers";
@@ -28,23 +28,16 @@ const collectionAddress = publicKey("HutUAyNZBVa7bpkkZpvoMbwSC1dyDL6mtEc1SFMne6Q
 
 console.log('creating NFT....');
 
-const mint = generateSigner(umi);
+const nftAddress = publicKey('JAb85hdJetyBGWQF9JNRcasY56qi7dLQBJdeJGQz83HP');
 
-// transaction to create NFT
-const transaction = await createNft(umi, {
-    mint ,
-    name : "My NFT", 
-    symbol : "M8",
-    uri : "https://raw.githubusercontent.com/Bazee-code/NFT-Token/refs/heads/main/nft-metadata.json",
-    sellerFeeBasisPoints : percentAmount(0),
-    collection : {
-        key : collectionAddress,
-        verified : false //we normally set this to true in prod nfts
-    }
+// transaction to verify if NFT exists in said collecition
+const transaction = await verifyCollectionV1(umi, {
+    metadata : findMetadataPda(umi, {mint : nftAddress}),
+    collectionMint : collectionAddress,
+    authority : umi.identity 
 });
 
 await transaction.sendAndConfirm(umi);
 
-const createdNft = await fetchDigitalAsset(umi, mint.publicKey);
 // get nft
-console.log(`created nft address is: ${getExplorerLink("address", createdNft.mint.publicKey, "devnet")}`)
+console.log(`verified nft of address ${nftAddress} and collection address ${collectionAddress} can be found here : ${getExplorerLink("address", nftAddress, "devnet")}`)
