@@ -1,5 +1,5 @@
 import { createNft, mplTokenMetadata } from "@metaplex-foundation/mpl-token-metadata";
-import { keypairIdentity } from "@metaplex-foundation/umi";
+import { generateSigner, keypairIdentity, percentAmount } from "@metaplex-foundation/umi";
 import { createUmi } from "@metaplex-foundation/umi-bundle-defaults";
 import { airdropIfRequired, getKeypairFromFile } from "@solana-developers/helpers";
 import {clusterApiUrl, Connection, LAMPORTS_PER_SOL} from '@solana/web3.js'
@@ -22,3 +22,17 @@ const umiUser = umi.eddsa.createKeypairFromSecretKey(user.secretKey);
 umi.use(keypairIdentity(umiUser))
 
 console.log('umi instance running');
+
+// collections are just nfts that point to other nfts
+const collectionMint = generateSigner(umi);
+
+const transaction = await createNft(umi, {
+    mint : collectionMint,
+    name : "My Collection", 
+    symbol : "MC",
+    uri : "https://...",
+    sellerFeeBasisPoints : percentAmount(0),
+    isCollection : true
+})
+
+await transaction.sendAndConfirm(umi);
