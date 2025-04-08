@@ -1,11 +1,12 @@
-import { createNft, mplTokenMetadata } from "@metaplex-foundation/mpl-token-metadata";
+import { createNft, fetchDigitalAsset, mplTokenMetadata } from "@metaplex-foundation/mpl-token-metadata";
 import { generateSigner, keypairIdentity, percentAmount } from "@metaplex-foundation/umi";
 import { createUmi } from "@metaplex-foundation/umi-bundle-defaults";
-import { airdropIfRequired, getKeypairFromFile } from "@solana-developers/helpers";
+import { airdropIfRequired, getExplorerLink, getKeypairFromFile } from "@solana-developers/helpers";
 import {clusterApiUrl, Connection, LAMPORTS_PER_SOL} from '@solana/web3.js'
 
 const connection = new Connection(clusterApiUrl("devnet"));
 
+// load user from id.json
 const user = await getKeypairFromFile();
 
 //in case wallet balance is empty
@@ -35,4 +36,10 @@ const transaction = await createNft(umi, {
     isCollection : true
 })
 
+// send transaction
 await transaction.sendAndConfirm(umi);
+
+// fetch collection
+const createdCollectionNft = await fetchDigitalAsset(umi, collectionMint.publicKey);
+
+console.log(`created collection address is ${getExplorerLink("address", createdCollectionNft.mint.publicKey, "devnet")}`);
